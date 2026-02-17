@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tea Leaf Language - Ta'ang</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            --maroon: #6e0d0d;
+            --dark-maroon: #4a0606;
+            --pattern-red: #5d0909; 
+            --cream: #fdf5e6;
+            --gold: #d4af37;
+            --tea-green: #4F7942;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--dark-maroon);
+            background-image: 
+                linear-gradient(rgba(74, 6, 6, 0.85), rgba(42, 3, 3, 0.95)),
+                conic-gradient(from 0deg at 50% 50%, var(--pattern-red) 0deg 90deg, var(--dark-maroon) 90deg 180deg, var(--pattern-red) 180deg 270deg, var(--dark-maroon) 270deg 360deg);
+            background-size: 100% 100%, 45px 45px; 
+            background-attachment: fixed;
+            color: var(--cream);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; overflow-x: hidden;
+        }
+
+        /* --- Settings & Switch Styles --- */
+        .switch { position: relative; display: inline-block; width: 46px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--maroon); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* --- To-Do List (My Day) Styles - Added purely for integration --- */
+        .task-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; color: var(--maroon); cursor: grab; }
+        .task-item.completed { opacity: 0.6; }
+        .task-item.completed span { text-decoration: line-through; }
+
+        /* --- Existing Modal & Floating Styles --- */
+        #note-modal, #settings-modal, #profile-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 10001; justify-content: center; align-items: center;
+        }
+        .note-box { background: var(--cream); padding: 20px; border-radius: 25px; width: 85%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: var(--maroon); }
+        .note-area { width: 100%; height: 180px; border: 2px solid #eee; border-radius: 15px; padding: 12px; margin-bottom: 15px; box-sizing: border-box; overflow-y: auto; background: white; color: #333; outline: none; }
+
+        #floating-note-btn {
+            position: fixed; bottom: 90px; right: 20px; background: var(--gold); width: 65px; height: 65px;
+            border-radius: 50%; border: 3px solid var(--cream); box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center; cursor: grab; z-index: 999; touch-action: none;
+        }
+
+        /* --- SplashScreen & Others (Rest of original CSS) --- */
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, var(--maroon), #2a0303); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease, visibility 0.8s; }
+        .app-name { color: var(--gold); font-size: 2.2rem; letter-spacing: 4px; font-weight: 900; }
+        .loader { width: 150px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; margin: 20px auto 0; overflow: hidden; }
+        .loader-bar { width: 0%; height: 100%; background: var(--gold); animation: loading 2.5s forwards ease-in-out; }
+        @keyframes loading { 0% { width: 0%; } 100% { width: 100%; } }
+        .fade-out { opacity: 0; visibility: hidden; }
+
+        .dialect-bar { width: 100%; background: rgba(0,0,0,0.6); padding: 15px 0; display: flex; justify-content: center; gap: 10px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px); }
+        .dialect-btn { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; }
+        .dialect-btn.active { background: var(--gold); color: var(--maroon); font-weight: bold; }
+
+        .card { background: var(--cream); color: var(--maroon); width: 85%; max-width: 380px; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6); margin-top: 30px; }
+        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(42, 3, 3, 0.95); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--gold); backdrop-filter: blur(10px); z-index: 100; }
+        .nav-item { color: var(--cream); text-decoration: none; text-align: center; font-size: 0.7rem; opacity: 0.6; cursor: pointer; }
+        .nav-item.active { opacity: 1; color: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <div id="settings-modal">
+        <div class="note-box" style="text-align:center;">
+            <h3 style="margin-top:0;">ဆက်တင်များ</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin:25px 0; font-weight: bold;">
+                <span>တုန်ခါမှု (Vibration)</span>
+                <label class="switch"><input type="checkbox" id="vibration-toggle" checked><span class="slider"></span></label>
+            </div>
+            <button onclick="toggleSettings()" style="background:var(--maroon); color:white; border:none; padding:12px 30px; border-radius:15px; width:100%;">ပိတ်မည်</button>
+        </div>
+    </div>
+
+    <div id="note-modal">
+        <div class="note-box">
+            <h3 style="color:var(--maroon); margin-top:0;">နေ့စဉ်မှတ်တမ်း (To-Do)</h3>
+            
+            <div id="taskList" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;"></div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <input id="taskInput" placeholder="အစီအစဉ်အသစ်..." style="padding:10px; border-radius:10px; border:1px solid #ddd;">
+                <div style="display:flex; gap:5px;">
+                    <input type="date" id="dueDate" style="flex:1; padding:10px; border-radius:10px; border:1px solid #ddd;">
+                    <button onclick="addTask()" style="background:var(--maroon); color:white; border:none; padding:10px; border-radius:10px;"><span class="material-icons-round">add</span></button>
+                    <button onclick="voiceTask()" style="background:var(--gold); color:var(--maroon); border:none; padding:10px; border-radius:10px;"><span class="material-icons-round">mic</span></button>
+                </div>
+            </div>
+            
+            <button onclick="toggleNote()" style="margin-top:15px; width:100%; background:#ccc; border:none; padding:12px; border-radius:12px; font-weight:bold;">ပိတ်မည်</button>
+        </div>
+    </div>
+
+    <div id="splash-screen">
+        <div style="text-align: center;">
+            <h1 class="app-name">TEA LEAF</h1>
+            <div class="loader"><div class="loader-bar"></div></div>
+        </div>
+    </div>
+
+    <div class="dialect-bar">
+        <button class="dialect-btn active">အခြေခံ</button>
+        <button class="dialect-btn">အဆင့်မြင့်</button>
+    </div>
+
+    <div class="card">
+        <h1 style="font-size: 2.5rem; margin: 10px 0;" id="taang-word">ရိုဆေ</h1>
+        <p style="color: #666; font-style: italic;" id="mm-word">Ro Say (မင်္ဂလာပါ)</p>
+        <div style="display: flex; justify-content: space-between; padding: 0 40px;">
+            <button onclick="prevWord()" style="background:none; border:none; color:var(--maroon); cursor:pointer;"><span class="material-icons-round">arrow_back_ios</span></button>
+            <span id="word-count">1 / 5</span>
+            <button onclick="nextWord()" style="background:none; border:none; color:var(--maroon); cursor:pointer;"><span class="material-icons-round">arrow_forward_ios</span></button>
+        </div>
+    </div>
+
+    <div id="floating-note-btn">
+        <span class="material-icons-round" style="font-size: 35px; color: var(--maroon);">edit_note</span>
+    </div>
+
+    <nav class="nav">
+        <div class="nav-item active"><span class="material-icons-round">home</span><br>ပင်မ</div>
+        <div class="nav-item"><span class="material-icons-round">book</span><br>အဘိဓာန်</div>
+        <div class="nav-item" onclick="toggleNote()"><span class="material-icons-round">event</span><br>အစီအစဉ်</div>
+    </nav>
+
+    <script>
+        // --- ၁။ မူရင်း Logic များ (Vibration, Settings, Splash) ---
+        function hapticFeedback() {
+            const vib = document.getElementById('vibration-toggle').checked;
+            if (vib && navigator.vibrate) navigator.vibrate(40);
+        }
+
+        function toggleSettings() {
+            const m = document.getElementById('settings-modal');
+            m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function toggleNote() {
+            const m = document.getElementById('note-modal');
+            m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+            if(m.style.display === 'flex') { renderTasks(); hapticFeedback(); }
+        }
+
+        // --- ၂။ To-Do List Logic (ကိုထွန်းဝင်းပို့ပေးတဲ့ ကုဒ်မှ Logic များ) ---
+        let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+        function save() { localStorage.setItem("tasks", JSON.stringify(tasks)); }
+
+        function renderTasks() {
+            let list = document.getElementById("taskList");
+            list.innerHTML = "";
+            tasks.forEach((t, i) => {
+                let div = document.createElement("div");
+                div.className = "task-item" + (t.done ? " completed" : "");
+                div.draggable = true; // Desktop Support
+                div.innerHTML = `
+                    <span onclick="toggleTask(${i})"><b>${t.text}</b><br><small>${t.date || ''}</small></span>
+                    <button onclick="deleteTask(${i})" style="border:none; background:none; color:red;"><span class="material-icons-round">delete</span></button>
+                `;
+                
+                // Desktop Drag & Drop logic inside your structure
+                div.ondragstart = (e) => e.dataTransfer.setData("idx", i);
+                div.ondragover = (e) => e.preventDefault();
+                div.ondrop = (e) => {
+                    let from = e.dataTransfer.getData("idx");
+                    [tasks[from], tasks[i]] = [tasks[i], tasks[from]];
+                    save(); renderTasks();
+                };
+                list.appendChild(div);
+            });
+        }
+
+        function addTask() {
+            let text = document.getElementById("taskInput").value;
+            let date = document.getElementById("dueDate").value;
+            if(!text) return;
+            tasks.push({text, date, done: false});
+            document.getElementById("taskInput").value = "";
+            save(); renderTasks(); hapticFeedback();
+        }
+
+        function toggleTask(i) { tasks[i].done = !tasks[i].done; save(); renderTasks(); }
+        function deleteTask(i) { tasks.splice(i, 1); save(); renderTasks(); }
+
+        function voiceTask() {
+            let rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            rec.lang = 'my-MM';
+            rec.onresult = e => { document.getElementById("taskInput").value = e.results[0][0].transcript; };
+            rec.start();
+        }
+
+        // --- ၃။ Floating Button Draggable Logic (Original Logic) ---
+        const noteBtn = document.getElementById('floating-note-btn');
+        let isDragging = false;
+
+        const moveHandler = (e) => {
+            isDragging = true;
+            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            noteBtn.style.left = (clientX - 32) + 'px';
+            noteBtn.style.top = (clientY - 32) + 'px';
+            noteBtn.style.right = 'auto'; noteBtn.style.bottom = 'auto';
+        };
+
+        noteBtn.addEventListener('mousedown', () => {
+            isDragging = false;
+            document.addEventListener('mousemove', moveHandler);
+            document.addEventListener('mouseup', () => { document.removeEventListener('mousemove', moveHandler); }, {once:true});
+        });
+        noteBtn.addEventListener('touchstart', () => { isDragging = false; }, {passive:true});
+        noteBtn.addEventListener('touchmove', moveHandler, {passive:false});
+        noteBtn.addEventListener('touchend', () => { if(!isDragging) toggleNote(); });
+        noteBtn.addEventListener('click', () => { if(!isDragging) toggleNote(); });
+
+        // --- ၄။ Word Data & Initial Load ---
+        const words = [{t: "ရိုဆေ", m: "Ro Say (မင်္ဂလာပါ)"}, {t: "ဂါးန်မား", m: "Gan Mar (ကျေးဇူးတင်ပါတယ်)"}];
+        let cur = 0;
+        function nextWord() { if(cur < words.length-1) { cur++; updateCard(); hapticFeedback(); } }
+        function prevWord() { if(cur > 0) { cur--; updateCard(); hapticFeedback(); } }
+        function updateCard() {
+            document.getElementById('taang-word').innerText = words[cur].t;
+            document.getElementById('mm-word').innerText = words[cur].m;
+            document.getElementById('word-count').innerText = `${cur+1} / ${words.length}`;
+        }
+
+        window.onload = () => {
+            setTimeout(() => document.getElementById('splash-screen').classList.add('fade-out'), 2000);
+            updateCard();
+        };
+    </script>
+</body>
+</html>
