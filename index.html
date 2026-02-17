@@ -25,16 +25,43 @@
             background-attachment: fixed;
             color: var(--cream);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; overflow-x: hidden;
         }
 
-        /* --- Settings & Switch Styles --- */
+        /* --- To-Do List Styles (Integrated) --- */
+        #todo-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark-maroon); z-index: 10005; flex-direction: column;
+        }
+        .todo-header {
+            background: var(--maroon); color: var(--gold); padding: 20px;
+            font-size: 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid var(--gold);
+        }
+        .todo-content { flex: 1; padding: 15px; overflow-y: auto; }
+        .task {
+            background: var(--cream); color: var(--maroon); padding: 15px;
+            border-radius: 15px; margin-bottom: 10px; display: flex;
+            justify-content: space-between; align-items: center; border-left: 5px solid var(--gold);
+        }
+        .task.completed { opacity: 0.5; grayscale: 1; }
+        .todo-controls {
+            padding: 20px; background: var(--maroon); border-top: 2px solid var(--gold);
+            padding-bottom: 30px;
+        }
+        .input-group { display: flex; gap: 8px; margin-bottom: 10px; }
+        .todo-input { 
+            flex: 1; padding: 12px; border: 1px solid var(--gold); border-radius: 10px; 
+            background: var(--cream); outline: none;
+        }
+        .btn-todo-add { 
+            background: var(--gold); color: var(--maroon); border: none; 
+            padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer;
+        }
+
+        /* --- Existing Styles (Unchanged) --- */
         .switch { position: relative; display: inline-block; width: 46px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -42,300 +69,199 @@
         input:checked + .slider { background-color: var(--maroon); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        /* --- Updated Note Modal Styles --- */
-        #note-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 10001;
-            justify-content: center; align-items: center;
+        #note-modal, #profile-modal, #settings-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 10001; justify-content: center; align-items: center;
         }
-        .note-box {
-            background: var(--cream);
-            padding: 20px;
-            border-radius: 25px;
-            width: 85%;
-            max-width: 350px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .note-toolbar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-            background: #eee;
-            padding: 8px;
-            border-radius: 12px;
-            justify-content: center;
-        }
-        .tool-btn {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 5px 12px;
-            cursor: pointer;
-            font-weight: bold;
-            color: var(--maroon);
-            font-size: 14px;
-        }
-        .note-area {
-            width: 100%;
-            height: 180px;
-            border: 2px solid #eee;
-            border-radius: 15px;
-            padding: 12px;
-            font-family: inherit;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            background: white;
-            color: #333;
-            text-align: left;
-            outline: none;
-            font-size: 1rem;
-        }
+        .note-box { background: var(--cream); padding: 20px; border-radius: 25px; width: 85%; max-width: 350px; }
+        .note-area { width: 100%; height: 180px; border: 2px solid #eee; border-radius: 15px; padding: 12px; margin-bottom: 15px; background: white; color: #333; outline: none; }
 
-        /* --- Floating Draggable Note Button --- */
         #floating-note-btn {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            background: var(--gold);
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            border: 3px solid var(--cream);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: grab;
-            z-index: 999;
-            touch-action: none;
+            position: fixed; bottom: 90px; right: 20px; background: var(--gold);
+            width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--cream);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center;
+            cursor: grab; z-index: 999; touch-action: none;
         }
 
         #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, var(--maroon), #2a0303);
             display: flex; justify-content: center; align-items: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            z-index: 9999; transition: opacity 0.8s ease, visibility 0.8s;
         }
-
-        .splash-content { text-align: center; }
-        .logo-wrapper { width: 120px; height: 120px; margin: 0 auto 20px; animation: pulse 2s infinite ease-in-out; }
-        .splash-logo { width: 100%; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4)); }
-        .app-name { color: var(--gold); font-size: 2.2rem; letter-spacing: 4px; margin: 10px 0 5px; font-weight: 900; }
-        .loader { width: 150px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; margin: 20px auto 0; overflow: hidden; }
-        .loader-bar { width: 0%; height: 100%; background: var(--gold); animation: loading 2.5s forwards ease-in-out; }
-        
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes loading { 0% { width: 0%; } 100% { width: 100%; } }
         .fade-out { opacity: 0; visibility: hidden; }
 
         .dialect-bar { width: 100%; background: rgba(0,0,0,0.6); padding: 15px 0; display: flex; justify-content: center; gap: 10px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px); }
-        .dialect-btn { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
+        .dialect-btn { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; }
         .dialect-btn.active { background: var(--gold); color: var(--maroon); font-weight: bold; }
 
-        .streak-container { position: relative; width: 180px; height: 180px; margin: 0 auto; display: flex; justify-content: center; align-items: center; }
-        .streak-number { font-size: 3.5rem; font-weight: 900; color: var(--gold); z-index: 5; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-        .leaf-svg { position: absolute; width: 50px; height: 50px; transition: 0.5s ease; }
-        .l1 { top: 0; transform: rotate(0deg); }
-        .l2 { right: 0px; top: 30px; transform: rotate(72deg); }
-        .l3 { right: 30px; bottom: 0; transform: rotate(144deg); }
-        .l4 { left: 30px; bottom: 0; transform: rotate(216deg); }
-        .l5 { left: 0px; top: 30px; transform: rotate(288deg); }
-
-        .card { background: var(--cream); color: var(--maroon); width: 85%; max-width: 380px; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6); margin-bottom: 30px; margin-top: 30px; overflow: hidden;}
+        .card { background: var(--cream); color: var(--maroon); width: 85%; max-width: 380px; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6); margin-bottom: 30px; margin-top: 30px; }
         .word-main { font-size: 2.5rem; margin: 10px 0; font-weight: bold; }
-        .word-sub { color: #666; font-style: italic; margin-bottom: 20px; }
-
-        .action-btns { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
-        .circle-btn { width: 55px; height: 55px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
-        .btn-audio { background: #eee; color: var(--maroon); }
-        .btn-mic { background: var(--maroon); color: white; box-shadow: 0 4px 10px rgba(110, 13, 13, 0.3); }
-
-        .level-section { width: 85%; max-width: 380px; margin-bottom: 100px; }
-        .level-info { display: flex; justify-content: space-between; color: var(--gold); font-size: 0.85rem; margin-bottom: 8px; }
-        .progress-bg { height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.3); }
-        .progress-fill { width: 45%; height: 100%; background: linear-gradient(90deg, var(--gold), #ffdf80); }
-
-        .settings-btn { position: fixed; bottom: 90px; left: 20px; background: var(--gold); padding: 10px; border-radius: 50%; border: 3px solid var(--cream); cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 90; }
-
-        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(42, 3, 3, 0.95); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--gold); backdrop-filter: blur(10px); z-index: 100; }
+        
+        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(42, 3, 3, 0.95); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--gold); z-index: 100; }
         .nav-item { color: var(--cream); text-decoration: none; text-align: center; font-size: 0.7rem; opacity: 0.6; cursor: pointer; }
         .nav-item.active { opacity: 1; color: var(--gold); }
-
-        #profile-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10002; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
 
-    <div id="settings-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center;">
-        <div style="background:var(--cream); color:var(--maroon); padding:25px; border-radius:25px; width:80%; max-width:300px; text-align:center;">
-            <h3 style="margin-top:0;">ဆက်တင်များ</h3>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin:25px 0; font-weight: bold;">
-                <span>တုန်ခါမှု (Vibration)</span>
-                <label class="switch">
-                    <input type="checkbox" id="vibration-toggle" checked>
-                    <span class="slider"></span>
-                </label>
+    <div id="todo-modal">
+        <div class="todo-header">
+            <span>လုပ်ဆောင်ရန် အစီအစဉ်</span>
+            <button onclick="toggleTodo()" style="background:none; border:none; color:var(--gold); cursor:pointer;"><span class="material-icons-round">close</span></button>
+        </div>
+        <div class="todo-content" id="taskList"></div>
+        <div class="todo-controls">
+            <div class="input-group">
+                <input id="taskInput" class="todo-input" placeholder="အသစ်ထည့်ရန်...">
+                <button class="btn-todo-add" onclick="addTask()">ပေါင်းထည့်</button>
             </div>
-            <button onclick="toggleSettings()" style="background:var(--maroon); color:white; border:none; padding:12px 30px; border-radius:15px; cursor:pointer; font-weight:bold; width:100%;">ပိတ်မည်</button>
+            <div class="input-group">
+                <input type="date" id="dueDate" class="todo-input" style="flex:0.6;">
+                <select id="category" class="todo-input" style="flex:0.4;">
+                    <option value="အထွေထွေ">အထွေထွေ</option>
+                    <option value="အလုပ်">အလုပ်</option>
+                    <option value="စာသင်">စာသင်</option>
+                </select>
+            </div>
         </div>
     </div>
 
-    <div id="profile-modal">
-        <div style="background:var(--cream); color:var(--maroon); padding:25px; border-radius:25px; width:85%; max-width:350px; text-align:center;">
-            <h3>ကျွန်ုပ်၏ အချက်အလက်</h3>
-            <div class="streak-container">
-                <div class="streak-number">၅</div>
-                <div class="leaf-svg l1"><svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg></div>
-                <div class="leaf-svg l2"><svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg></div>
-                <div class="leaf-svg l3"><svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg></div>
-                <div class="leaf-svg l4"><svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg></div>
-                <div class="leaf-svg l5"><svg viewBox="0 0 100 100"><path d="M50 80 C 20 80, 10 50, 50 20 C 90 50, 80 80, 50 80" fill="#4F7942"/><path d="M50 80 L 50 25" stroke="#3e5f34" stroke-width="2" fill="none"/></svg></div>
+    <div id="settings-modal">
+        <div style="background:var(--cream); color:var(--maroon); padding:25px; border-radius:25px; width:80%; max-width:300px; text-align:center;">
+            <h3>ဆက်တင်များ</h3>
+            <div style="display:flex; justify-content:space-between; margin:25px 0;">
+                <span>တုန်ခါမှု (Vibration)</span>
+                <label class="switch"><input type="checkbox" id="vibration-toggle" checked><span class="slider"></span></label>
             </div>
-            <p style="color: var(--gold); font-weight: bold; margin-bottom: 25px;">လက်ဖက်ညွန့် ၅ ညွန့် ရှင်သန်နေပြီ</p>
-            <button onclick="toggleProfile()" style="background:var(--maroon); color:white; border:none; padding:12px; border-radius:12px; cursor:pointer; font-weight:bold; width: 100%;">ပိတ်မည်</button>
+            <button onclick="toggleSettings()" style="background:var(--maroon); color:white; border:none; padding:12px; border-radius:15px; width:100%;">ပိတ်မည်</button>
         </div>
     </div>
 
     <div id="note-modal">
         <div class="note-box">
-            <h3 style="color:var(--maroon); margin-top:0;">မှတ်စု (Notes)</h3>
-            <div class="note-toolbar">
-                <button class="tool-btn" onclick="formatText('bold')">B</button>
-                <button class="tool-btn" onclick="formatText('italic')" style="font-style: italic;">I</button>
-                <button class="tool-btn" onclick="formatText('backColor', 'yellow')">🖌️</button>
-                <button class="tool-btn" onclick="formatText('foreColor', '#6e0d0d')">🎨</button>
-            </div>
-            <div id="note-input" class="note-area" contenteditable="true" placeholder="ဒီနေရာမှာ မှတ်သားပါ..."></div>
+            <h3 style="color:var(--maroon);">မှတ်စု (Notes)</h3>
+            <div id="note-input" class="note-area" contenteditable="true"></div>
             <div style="display:flex; gap:10px;">
-                <button onclick="saveNote()" style="flex:1; background:var(--maroon); color:white; border:none; padding:12px; border-radius:12px; cursor:pointer; font-weight:bold;">သိမ်းမည်</button>
-                <button onclick="toggleNote()" style="flex:1; background:#ccc; border:none; padding:12px; border-radius:12px; cursor:pointer; font-weight:bold;">ပိတ်မည်</button>
+                <button onclick="saveNote()" style="flex:1; background:var(--maroon); color:white; border:none; padding:12px; border-radius:12px;">သိမ်းမည်</button>
+                <button onclick="toggleNote()" style="flex:1; background:#ccc; border:none; padding:12px; border-radius:12px;">ပိတ်မည်</button>
             </div>
         </div>
     </div>
 
     <div id="splash-screen">
-        <div class="splash-content">
-            <div class="logo-wrapper">
-                <svg viewBox="0 0 100 100" class="splash-logo">
-                    <path d="M50 90 C 20 90, 5 50, 50 10 C 95 50, 80 90, 50 90" fill="#4F7942"/>
-                    <path d="M50 90 L 50 15" stroke="#d4af37" stroke-width="3" fill="none"/>
-                    <path d="M50 45 L 75 30 M 50 60 L 25 45 M 50 75 L 70 65" stroke="#d4af37" stroke-width="2" fill="none"/>
-                </svg>
+        <div style="text-align:center;">
+            <h1 style="color:var(--gold); font-size:2.2rem; letter-spacing:4px;">TEA LEAF</h1>
+            <div style="width:150px; height:4px; background:rgba(255,255,255,0.1); margin:20px auto; overflow:hidden;">
+                <div style="width:100%; height:100%; background:var(--gold); animation: loading 2.5s forwards;"></div>
             </div>
-            <h1 class="app-name">TEA LEAF</h1>
-            <p style="color: var(--cream); opacity: 0.8;">Ta'ang Language App</p>
-            <div class="loader"><div class="loader-bar"></div></div>
         </div>
     </div>
 
     <div class="dialect-bar">
         <button class="dialect-btn active">အခြေခံ</button>
         <button class="dialect-btn">အလယ်အလတ်</button>
-        <button class="dialect-btn">အဆင့်မြင့်</button>
     </div>
 
     <div class="card">
-        <div id="card-visual" style="width: 100%; height: 160px; background: #eee; border-radius: 15px; display: flex; align-items: center; justify-content: center; transition: 0.5s ease;">
-            <span class="material-icons-round" style="font-size: 50px; color: #ccc;">image</span>
+        <div id="card-visual" style="width: 100%; height: 160px; background: #eee; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons-round" style="font-size: 50px; color: #ccc;">eco</span>
         </div>
-        
         <h1 class="word-main" id="taang-word">ရိုဆေ</h1>
-        <p class="word-sub" id="mm-word">Ro Say (မင်္ဂလာပါ)</p>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 40px;">
-            <button onclick="prevWord()" style="background:none; border:none; color:var(--maroon); cursor:pointer;"><span class="material-icons-round">arrow_back_ios</span></button>
-            <span id="word-count" style="font-size: 0.9rem; color: #888; font-weight: bold;">1 / 5</span>
-            <button onclick="nextWord()" style="background:none; border:none; color:var(--maroon); cursor:pointer;"><span class="material-icons-round">arrow_forward_ios</span></button>
-        </div>
-
-        <div class="action-btns">
-            <button class="circle-btn btn-audio"><span class="material-icons-round">volume_up</span></button>
-            <button class="circle-btn btn-mic"><span class="material-icons-round">mic</span></button>
+        <p id="mm-word">Ro Say (မင်္ဂလာပါ)</p>
+        <div style="display: flex; justify-content: space-between; padding: 0 40px;">
+            <button onclick="prevWord()" style="background:none; border:none; color:var(--maroon);"><span class="material-icons-round">arrow_back_ios</span></button>
+            <span id="word-count">1 / 5</span>
+            <button onclick="nextWord()" style="background:none; border:none; color:var(--maroon);"><span class="material-icons-round">arrow_forward_ios</span></button>
         </div>
     </div>
 
-    <div class="level-section">
-        <div class="level-info"><span>Tea Picker</span><span>Village Elder</span></div>
-        <div class="progress-bg"><div class="progress-fill"></div></div>
-    </div>
-
-    <div class="settings-btn" onclick="toggleSettings()">
-        <span class="material-icons-round" style="font-size: 30px; color: var(--maroon);">settings</span>
-    </div>
-
-    <div id="floating-note-btn">
-        <span class="material-icons-round" style="font-size: 35px; color: var(--maroon);">edit_note</span>
-    </div>
+    <div id="floating-note-btn"><span class="material-icons-round" style="font-size: 35px; color: var(--maroon);">edit_note</span></div>
 
     <nav class="nav">
-        <a href="#" class="nav-item active"><span class="material-icons-round">home</span><br>ပင်မ</a>
-        <a href="#" class="nav-item"><span class="material-icons-round">book</span><br>အဘိဓာန်</a>
-        <a href="#" class="nav-item"><span class="material-icons-round">event</span><br>ပြက္ခဒိန်</a>
-        <a href="#" class="nav-item" onclick="toggleProfile()"><span class="material-icons-round">account_circle</span><br>ကိုယ်ရေး</a>
+        <a class="nav-item active" onclick="location.reload()"><span class="material-icons-round">home</span><br>ပင်မ</a>
+        <a class="nav-item"><span class="material-icons-round">book</span><br>အဘိဓာန်</a>
+        <a class="nav-item" onclick="toggleTodo()"><span class="material-icons-round">event</span><br>အစီအစဉ်</a>
+        <a class="nav-item"><span class="material-icons-round">account_circle</span><br>ကိုယ်ရေး</a>
     </nav>
 
     <script>
-        // ၁။ Vibration Utility
+        // ၁။ Vibration & Modals
         function hapticFeedback() {
-            const vibrationEnabled = document.getElementById('vibration-toggle').checked;
-            if (vibrationEnabled && navigator.vibrate) {
-                navigator.vibrate(40);
+            if (document.getElementById('vibration-toggle').checked && navigator.vibrate) navigator.vibrate(40);
+        }
+        function toggleSettings() { 
+            const m = document.getElementById('settings-modal'); 
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; 
+        }
+        function toggleNote() { 
+            const m = document.getElementById('note-modal'); 
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; 
+        }
+        function toggleTodo() {
+            hapticFeedback();
+            const m = document.getElementById('todo-modal');
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // ၂။ To-Do Logic
+        let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+        let lastDate = localStorage.getItem("lastSavedDate");
+
+        function checkDailyReset() {
+            let today = new Date().toDateString();
+            if (lastDate && today !== lastDate) {
+                tasks = tasks.filter(t => !t.done);
+                saveTasks();
             }
+            localStorage.setItem("lastSavedDate", today);
         }
 
-        // ၂။ Modal Toggles
-        function toggleSettings() {
-            const modal = document.getElementById('settings-modal');
-            modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'flex' : 'none';
+        function saveTasks() { localStorage.setItem("tasks", JSON.stringify(tasks)); }
+
+        function renderTasks() {
+            let list = document.getElementById("taskList");
+            list.innerHTML = "";
+            tasks.forEach((t, i) => {
+                let div = document.createElement("div");
+                div.className = "task" + (t.done ? " completed" : "");
+                div.innerHTML = `
+                    <div><b>${t.text}</b> <br><small>📅 ${t.date || "ရက်စွဲမရှိ"} [${t.category}]</small></div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <input type="checkbox" ${t.done ? "checked" : ""} onclick="toggleTask(${i})" style="transform: scale(1.3);">
+                        <button onclick="deleteTask(${i})" style="border:none; background:none; color:red;"><span class="material-icons-round">delete</span></button>
+                    </div>`;
+                list.appendChild(div);
+            });
         }
 
-        function toggleProfile() {
-            const modal = document.getElementById('profile-modal');
-            modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'flex' : 'none';
-            hapticFeedback();
+        function addTask() {
+            let text = document.getElementById("taskInput").value;
+            if (!text) return;
+            tasks.push({ text, date: document.getElementById("dueDate").value, category: document.getElementById("category").value, done: false });
+            document.getElementById("taskInput").value = "";
+            saveTasks(); renderTasks(); hapticFeedback();
         }
 
-        function toggleNote() {
-            const modal = document.getElementById('note-modal');
-            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
-            if(modal.style.display === 'flex') hapticFeedback();
-        }
+        function toggleTask(i) { tasks[i].done = !tasks[i].done; saveTasks(); renderTasks(); hapticFeedback(); }
+        function deleteTask(i) { tasks.splice(i, 1); saveTasks(); renderTasks(); hapticFeedback(); }
 
-        // ၃။ Formatting & Saving Notes
-        function formatText(command, value = null) {
-            document.execCommand(command, false, value);
-            hapticFeedback();
-        }
-
-        function saveNote() {
-            const noteContent = document.getElementById('note-input').innerHTML;
-            localStorage.setItem('taang_rich_note', noteContent);
-            hapticFeedback();
-            alert('မှတ်စုကို သိမ်းဆည်းလိုက်ပါပြီ။');
-            toggleNote();
-        }
-
-        // ၄။ Draggable Floating Button
+        // ၃။ Floating Button (Boundary Check)
         const noteBtn = document.getElementById('floating-note-btn');
         let isDragging = false;
         const moveHandler = (e) => {
             isDragging = true;
             let clientX = e.touches ? e.touches[0].clientX : e.clientX;
             let clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            const btnSize = 65;
-            const margin = 10;
-            let newX = clientX - 32;
-            let newY = clientY - 32;
-            noteBtn.style.left = newX + 'px';
-            noteBtn.style.top = newY + 'px';
-            noteBtn.style.right = 'auto';
-            noteBtn.style.bottom = 'auto';
+            const btnSize = 65; const margin = 10;
+            let newX = clientX - (btnSize / 2);
+            let newY = clientY - (btnSize / 2);
+            if (newX < margin) newX = margin;
+            if (newX > window.innerWidth - btnSize - margin) newX = window.innerWidth - btnSize - margin;
+            if (newY < margin) newY = margin;
+            if (newY > window.innerHeight - btnSize - margin) newY = window.innerHeight - btnSize - margin;
+            noteBtn.style.left = newX + 'px'; noteBtn.style.top = newY + 'px';
+            noteBtn.style.right = 'auto'; noteBtn.style.bottom = 'auto';
             if (e.cancelable) e.preventDefault();
         };
 
@@ -349,85 +275,24 @@
         });
         noteBtn.addEventListener('click', () => { if (!isDragging) toggleNote(); });
 
-        // ၅။ Data & Display Logic (ပေါင်းစပ်ထားသောအပိုင်း)
+        // ၄။ Word Display
         const basicWords = [
             { taang: "ရိုဆေ", mm: "Ro Say (မင်္ဂလာပါ)" },
             { taang: "အိုးမ်ရောင်", mm: "Om Yaung (ထမင်းစားပြီးပြီလား)" },
-            { taang: "အိုးမ်ရောင်အေး", mm: "Om Yaung Ay (စားပြီးပါပြီ)" },
-            { taang: "ဂါးန်မား", mm: "Gan Mar (ကျေးဇူးတင်ပါတယ်)" },
-            { taang: "အူအေ", mm: "U-Ay (ဟုတ်ကဲ့/အင်း)" }
+            { taang: "ဂါးန်မား", mm: "Gan Mar (ကျေးဇူးတင်ပါတယ်)" }
         ];
-
         let currentIndex = 0;
-
-        // --- ပေါင်းစပ်ထားသော displayWord Function ---
-        function displayWord(index) {
-            const word = basicWords[index];
-            const cardImageArea = document.getElementById('card-visual');
-            
-            // စကားလုံးအလိုက် Background အရောင်လေးတွေ ပြောင်းလဲခြင်း
-            const colors = ['#e8f5e9', '#fff3e0', '#f3e5f5', '#e3f2fd', '#fbe9e7'];
-            cardImageArea.style.backgroundColor = colors[index % colors.length];
-            
-            // Icon လေး ထည့်သွင်းခြင်း
-            cardImageArea.innerHTML = `<span style="font-size:80px; color:var(--tea-green); opacity:0.3" class="material-icons-round">eco</span>`;
-            
-            document.getElementById('taang-word').innerText = word.taang;
-            document.getElementById('mm-word').innerText = word.mm;
-            document.getElementById('word-count').innerText = `${index + 1} / ${basicWords.length}`;
+        function displayWord(i) {
+            document.getElementById('taang-word').innerText = basicWords[i].taang;
+            document.getElementById('mm-word').innerText = basicWords[i].mm;
+            document.getElementById('word-count').innerText = `${i + 1} / ${basicWords.length}`;
         }
+        function nextWord() { if (currentIndex < basicWords.length - 1) { currentIndex++; displayWord(currentIndex); hapticFeedback(); } }
+        function prevWord() { if (currentIndex > 0) { currentIndex--; displayWord(currentIndex); hapticFeedback(); } }
 
-        function nextWord() {
-            hapticFeedback();
-            if (currentIndex < basicWords.length - 1) {
-                currentIndex++;
-                displayWord(currentIndex);
-            }
-        }
-
-        function prevWord() {
-            hapticFeedback();
-            if (currentIndex > 0) {
-                currentIndex--;
-                displayWord(currentIndex);
-            }
-        }
-
-        // ၆။ Initialization
         window.addEventListener('load', () => {
-            const savedNote = localStorage.getItem('taang_rich_note');
-            if(savedNote) document.getElementById('note-input').innerHTML = savedNote;
-
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if(splash) splash.classList.add('fade-out');
-            }, 2500);
-            
-            displayWord(0);
-        });
-
-        // Dialect & Nav interaction
-        document.querySelectorAll('.dialect-btn, .nav-item').forEach(el => {
-            el.addEventListener('click', function() {
-                hapticFeedback();
-                const selector = this.classList.contains('dialect-btn') ? '.dialect-btn.active' : '.nav-item.active';
-                const currentActive = document.querySelector(selector);
-                if(currentActive) currentActive.classList.remove('active');
-                this.classList.add('active');
-
-                if (this.classList.contains('dialect-btn')) {
-                    if (this.innerText === "အခြေခံ") {
-                        currentIndex = 0;
-                        displayWord(currentIndex);
-                    } else {
-                        document.getElementById('taang-word').innerText = "မကြာမီ...";
-                        document.getElementById('mm-word').innerText = "Coming Soon";
-                        document.getElementById('word-count').innerText = "-";
-                        document.getElementById('card-visual').style.backgroundColor = "#eee";
-                        document.getElementById('card-visual').innerHTML = `<span class="material-icons-round" style="font-size: 50px; color: #ccc;">hourglass_empty</span>`;
-                    }
-                }
-            });
+            checkDailyReset(); renderTasks(); displayWord(0);
+            setTimeout(() => document.getElementById('splash-screen').classList.add('fade-out'), 2000);
         });
     </script>
 </body>
