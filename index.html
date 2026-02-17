@@ -25,7 +25,8 @@
             background-attachment: fixed;
             color: var(--cream);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
             min-height: 100vh; overflow-x: hidden;
         }
 
@@ -37,33 +38,52 @@
         input:checked + .slider { background-color: var(--maroon); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        /* --- Note Modal & Rich Text Styles --- */
+        /* --- Updated Note Modal Styles (Rich Text Support) --- */
         #note-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 10001; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.8); z-index: 10001;
+            justify-content: center; align-items: center;
         }
-        .note-box { background: var(--cream); padding: 20px; border-radius: 25px; width: 85%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .note-toolbar { display: flex; gap: 8px; margin-bottom: 10px; background: #eee; padding: 8px; border-radius: 12px; justify-content: center; }
-        .tool-btn { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 5px 12px; cursor: pointer; font-weight: bold; color: var(--maroon); font-size: 14px; }
-        .note-area { width: 100%; height: 180px; border: 2px solid #eee; border-radius: 15px; padding: 12px; margin-bottom: 15px; box-sizing: border-box; overflow-y: auto; background: white; color: #333; text-align: left; outline: none; font-size: 1rem; }
+        .note-box {
+            background: var(--cream); padding: 20px; border-radius: 25px;
+            width: 85%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .note-toolbar {
+            display: flex; gap: 8px; margin-bottom: 10px; background: #eee;
+            padding: 8px; border-radius: 12px; justify-content: center;
+        }
+        .tool-btn {
+            background: white; border: 1px solid #ddd; border-radius: 8px;
+            padding: 5px 12px; cursor: pointer; font-weight: bold; color: var(--maroon); font-size: 14px;
+        }
+        .note-area {
+            width: 100%; height: 180px; border: 2px solid #eee; border-radius: 15px;
+            padding: 12px; font-family: inherit; margin-bottom: 15px;
+            box-sizing: border-box; overflow-y: auto; background: white;
+            color: #333; text-align: left; outline: none; font-size: 1rem;
+        }
 
-        /* --- To-Do List Specific Styles --- */
-        #todo-section { display: none; margin-top: 10px; }
-        .task-item { background: white; padding: 10px; border-radius: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; color: var(--maroon); font-size: 0.9rem; border-left: 4px solid var(--gold); }
-        .task-item.completed { opacity: 0.5; text-decoration: line-through; }
+        /* To-Do List Specific (Added Styles) */
+        .todo-container { display: none; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 15px; }
+        .task-item { background: white; padding: 10px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; color: var(--maroon); box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: grab; }
+        .task-item.completed { opacity: 0.6; text-decoration: line-through; }
 
-        /* --- Floating Button --- */
+        /* --- Floating Draggable Note Button --- */
         #floating-note-btn {
-            position: fixed; bottom: 90px; right: 20px; background: var(--gold); width: 65px; height: 65px;
-            border-radius: 50%; border: 3px solid var(--cream); box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            display: flex; justify-content: center; align-items: center; cursor: grab; z-index: 999; touch-action: none;
+            position: fixed; bottom: 90px; right: 20px;
+            background: var(--gold); width: 65px; height: 65px;
+            border-radius: 50%; border: 3px solid var(--cream);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center;
+            cursor: grab; z-index: 999; touch-action: none;
         }
 
         /* --- Splash Screen --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, var(--maroon), #2a0303);
-            display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease, visibility 0.8s;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.8s ease, visibility 0.8s;
         }
         .splash-content { text-align: center; }
         .logo-wrapper { width: 120px; height: 120px; margin: 0 auto 20px; animation: pulse 2s infinite ease-in-out; }
@@ -75,7 +95,7 @@
         @keyframes loading { 0% { width: 0%; } 100% { width: 100%; } }
         .fade-out { opacity: 0; visibility: hidden; }
 
-        /* --- Rest of Original UI Styles --- */
+        /* --- Main UI Elements --- */
         .dialect-bar { width: 100%; background: rgba(0,0,0,0.6); padding: 15px 0; display: flex; justify-content: center; gap: 10px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px); }
         .dialect-btn { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
         .dialect-btn.active { background: var(--gold); color: var(--maroon); font-weight: bold; }
@@ -102,6 +122,7 @@
         .progress-fill { width: 45%; height: 100%; background: linear-gradient(90deg, var(--gold), #ffdf80); }
 
         .settings-btn { position: fixed; bottom: 90px; left: 20px; background: var(--gold); padding: 10px; border-radius: 50%; border: 3px solid var(--cream); cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 90; }
+
         .nav { position: fixed; bottom: 0; width: 100%; background: rgba(42, 3, 3, 0.95); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--gold); backdrop-filter: blur(10px); z-index: 100; }
         .nav-item { color: var(--cream); text-decoration: none; text-align: center; font-size: 0.7rem; opacity: 0.6; cursor: pointer; }
         .nav-item.active { opacity: 1; color: var(--gold); }
@@ -111,18 +132,21 @@
 <body>
 
     <div id="settings-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center;">
-        <div style="background:var(--cream); color:var(--maroon); padding:25px; border-radius:25px; width:80%; max-width:300px; text-align:center;">
+        <div style="background:var(--cream); color:var(--maroon); padding:25px; border-radius:25px; width:80%; max-width:300px; text-align:center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
             <h3 style="margin-top:0;">ဆက်တင်များ</h3>
             <div style="display:flex; justify-content:space-between; align-items:center; margin:25px 0; font-weight: bold;">
                 <span>တုန်ခါမှု (Vibration)</span>
-                <label class="switch"><input type="checkbox" id="vibration-toggle" checked><span class="slider"></span></label>
+                <label class="switch">
+                    <input type="checkbox" id="vibration-toggle" checked>
+                    <span class="slider"></span>
+                </label>
             </div>
             <button onclick="toggleSettings()" style="background:var(--maroon); color:white; border:none; padding:12px 30px; border-radius:15px; cursor:pointer; font-weight:bold; width:100%;">ပိတ်မည်</button>
         </div>
     </div>
 
     <div id="profile-modal">
-        <div style="background:var(--cream); color:var(--maroon); padding:25px; border-radius:25px; width:85%; max-width:350px; text-align:center;">
+        <div style="background:var(--cream); color:var(--maroon); padding:25px; border-radius:25px; width:85%; max-width:350px; text-align:center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
             <h3 style="margin-top:0;">ကျွန်ုပ်၏ အချက်အလက်</h3>
             <div class="streak-container">
                 <div class="streak-number">၅</div>
@@ -140,11 +164,11 @@
     <div id="note-modal">
         <div class="note-box">
             <div style="display:flex; justify-content: space-around; margin-bottom: 15px;">
-                <button onclick="switchNoteTab('rich')" id="tab-rich" style="background:var(--gold); border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">မှတ်စု</button>
-                <button onclick="switchNoteTab('todo')" id="tab-todo" style="background:#eee; border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">To-Do</button>
+                <button onclick="showTab('rich')" id="btn-rich" style="background:var(--gold); border:none; padding:8px 20px; border-radius:10px; font-weight:bold; cursor:pointer;">မှတ်စု</button>
+                <button onclick="showTab('todo')" id="btn-todo" style="background:#eee; border:none; padding:8px 20px; border-radius:10px; font-weight:bold; cursor:pointer;">To-Do</button>
             </div>
 
-            <div id="rich-note-section">
+            <div id="rich-section">
                 <div class="note-toolbar">
                     <button class="tool-btn" onclick="formatText('bold')">B</button>
                     <button class="tool-btn" onclick="formatText('italic')" style="font-style: italic;">I</button>
@@ -152,18 +176,20 @@
                     <button class="tool-btn" onclick="formatText('foreColor', '#6e0d0d')">🎨</button>
                 </div>
                 <div id="note-input" class="note-area" contenteditable="true" placeholder="ဒီနေရာမှာ မှတ်သားပါ..."></div>
-                <button onclick="saveNote()" style="width:100%; background:var(--maroon); color:white; border:none; padding:12px; border-radius:12px; font-weight:bold; margin-bottom:10px;">မှတ်စုသိမ်းမည်</button>
             </div>
 
-            <div id="todo-section">
-                <div id="taskList" style="max-height: 150px; overflow-y: auto; margin-bottom: 10px;"></div>
+            <div id="todo-section" style="display:none;">
+                <div id="taskList" style="max-height: 180px; overflow-y: auto; margin-bottom: 10px;"></div>
                 <div style="display:flex; gap:5px; margin-bottom:10px;">
-                    <input id="taskInput" placeholder="အစီအစဉ်သစ်..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ddd;">
-                    <button onclick="addTask()" style="background:var(--maroon); color:white; border:none; padding:8px 12px; border-radius:8px;"><span class="material-icons-round">add</span></button>
+                    <input id="taskInput" placeholder="အစီအစဉ်သစ်..." style="flex:1; padding:10px; border-radius:10px; border:1px solid #ddd;">
+                    <button onclick="addTask()" style="background:var(--maroon); color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;"><span class="material-icons-round">add</span></button>
                 </div>
             </div>
-            
-            <button onclick="toggleNote()" style="width:100%; background:#ccc; border:none; padding:12px; border-radius:12px; cursor:pointer; font-weight:bold;">ပိတ်မည်</button>
+
+            <div style="display:flex; gap:10px;">
+                <button onclick="saveCurrentData()" style="flex:1; background:var(--maroon); color:white; border:none; padding:12px; border-radius:12px; cursor:pointer; font-weight:bold;">သိမ်းမည်</button>
+                <button onclick="toggleNote()" style="flex:1; background:#ccc; border:none; padding:12px; border-radius:12px; cursor:pointer; font-weight:bold;">ပိတ်မည်</button>
+            </div>
         </div>
     </div>
 
@@ -221,12 +247,12 @@
     <nav class="nav">
         <a href="#" class="nav-item active"><span class="material-icons-round">home</span><br>ပင်မ</a>
         <a href="#" class="nav-item"><span class="material-icons-round">book</span><br>အဘိဓာန်</a>
-        <a href="#" onclick="toggleNote(); switchNoteTab('todo');" class="nav-item"><span class="material-icons-round">event</span><br>ပြက္ခဒိန်</a>
+        <a href="#" onclick="toggleNote(); showTab('todo');" class="nav-item"><span class="material-icons-round">event</span><br>ပြက္ခဒိန်</a>
         <a href="#" class="nav-item" onclick="toggleProfile()"><span class="material-icons-round">account_circle</span><br>ကိုယ်ရေး</a>
     </nav>
 
     <script>
-        // --- ၁။ မူရင်း Utilities (Vibration, Modals) ---
+        /* --- ၁။ မူရင်း Logic များ (Vibration, Modals) --- */
         function hapticFeedback() {
             const vib = document.getElementById('vibration-toggle').checked;
             if (vib && navigator.vibrate) navigator.vibrate(40);
@@ -246,34 +272,52 @@
         function toggleNote() {
             const m = document.getElementById('note-modal');
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
-            if(m.style.display === 'flex') { hapticFeedback(); renderTasks(); }
+            if(m.style.display === 'flex') hapticFeedback();
         }
 
-        // --- ၂။ Rich Text Logic (Original) ---
-        function formatText(cmd, val = null) { document.execCommand(cmd, false, val); hapticFeedback(); }
-        function saveNote() {
-            const content = document.getElementById('note-input').innerHTML;
-            localStorage.setItem('taang_rich_note', content);
-            hapticFeedback(); alert('မှတ်စုကို သိမ်းဆည်းလိုက်ပါပြီ။');
+        /* --- ၂။ Rich Text Formatting (Original) --- */
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            hapticFeedback();
         }
 
-        // --- ၃။ To-Do List Logic (New Integrated) ---
+        /* --- ၃။ Combined Saving & Tabs Logic --- */
+        let currentTab = 'rich';
         let tasks = JSON.parse(localStorage.getItem("taang_tasks") || "[]");
-        function switchNoteTab(tab) {
-            document.getElementById('rich-note-section').style.display = (tab === 'rich') ? 'block' : 'none';
+
+        function showTab(tab) {
+            currentTab = tab;
+            document.getElementById('rich-section').style.display = (tab === 'rich') ? 'block' : 'none';
             document.getElementById('todo-section').style.display = (tab === 'todo') ? 'block' : 'none';
-            document.getElementById('tab-rich').style.background = (tab === 'rich') ? 'var(--gold)' : '#eee';
-            document.getElementById('tab-todo').style.background = (tab === 'todo') ? 'var(--gold)' : '#eee';
+            document.getElementById('btn-rich').style.background = (tab === 'rich') ? 'var(--gold)' : '#eee';
+            document.getElementById('btn-todo').style.background = (tab === 'todo') ? 'var(--gold)' : '#eee';
+            if(tab === 'todo') renderTasks();
         }
 
+        function saveCurrentData() {
+            if(currentTab === 'rich') {
+                const content = document.getElementById('note-input').innerHTML;
+                localStorage.setItem('taang_rich_note', content);
+                alert('မှတ်စုကို သိမ်းဆည်းလိုက်ပါပြီ။');
+            } else {
+                localStorage.setItem("taang_tasks", JSON.stringify(tasks));
+                alert('To-Do List ကို သိမ်းဆည်းလိုက်ပါပြီ။');
+            }
+            hapticFeedback();
+            toggleNote();
+        }
+
+        /* --- ၄။ To-Do Logic --- */
         function renderTasks() {
             const list = document.getElementById("taskList");
             list.innerHTML = "";
             tasks.forEach((t, i) => {
                 const div = document.createElement("div");
                 div.className = "task-item" + (t.done ? " completed" : "");
-                div.innerHTML = `<span onclick="toggleTask(${i})">${t.text}</span>
-                                 <span class="material-icons-round" onclick="deleteTask(${i})" style="font-size:18px; color:red; cursor:pointer;">delete</span>`;
+                div.innerHTML = `
+                    <span onclick="toggleTask(${i})" style="flex:1;">${t.text}</span>
+                    <span class="material-icons-round" onclick="deleteTask(${i})" style="color:red; cursor:pointer;">delete</span>
+                `;
                 list.appendChild(div);
             });
         }
@@ -281,32 +325,43 @@
             const inp = document.getElementById("taskInput");
             if(!inp.value) return;
             tasks.push({text: inp.value, done: false});
-            inp.value = ""; saveTasks();
+            inp.value = ""; renderTasks(); hapticFeedback();
         }
-        function toggleTask(i) { tasks[i].done = !tasks[i].done; saveTasks(); }
-        function deleteTask(i) { tasks.splice(i, 1); saveTasks(); }
-        function saveTasks() { localStorage.setItem("taang_tasks", JSON.stringify(tasks)); renderTasks(); hapticFeedback(); }
+        function toggleTask(i) { tasks[i].done = !tasks[i].done; renderTasks(); }
+        function deleteTask(i) { tasks.splice(i, 1); renderTasks(); }
 
-        // --- ၄။ Floating Button Draggable (Original) ---
+        /* --- ၅။ Floating Draggable Logic (Original) --- */
         const noteBtn = document.getElementById('floating-note-btn');
         let isDragging = false;
+
         const moveHandler = (e) => {
             isDragging = true;
-            let cx = e.touches ? e.touches[0].clientX : e.clientX;
-            let cy = e.touches ? e.touches[0].clientY : e.clientY;
-            noteBtn.style.left = (cx - 32) + 'px';
-            noteBtn.style.top = (cy - 32) + 'px';
+            let cx = (e.touches) ? e.touches[0].clientX : e.clientX;
+            let cy = (e.touches) ? e.touches[0].clientY : e.clientY;
+            
+            const btnSize = 65; const margin = 10;
+            const maxX = window.innerWidth - btnSize - margin;
+            const maxY = window.innerHeight - btnSize - 80;
+
+            let nx = cx - 32; let ny = cy - 32;
+            if (nx < margin) nx = margin; if (nx > maxX) nx = maxX;
+            if (ny < margin) ny = margin; if (ny > maxY) ny = maxY;
+
+            noteBtn.style.left = nx + 'px'; noteBtn.style.top = ny + 'px';
             noteBtn.style.right = 'auto'; noteBtn.style.bottom = 'auto';
             if (e.cancelable) e.preventDefault();
         };
-        noteBtn.addEventListener('mousedown', () => { isDragging = false; document.addEventListener('mousemove', moveHandler); });
-        document.addEventListener('mouseup', () => document.removeEventListener('mousemove', moveHandler));
-        noteBtn.addEventListener('touchstart', () => isDragging = false, {passive:true});
-        noteBtn.addEventListener('touchmove', moveHandler, {passive:false});
-        noteBtn.addEventListener('touchend', () => { if(!isDragging) toggleNote(); });
-        noteBtn.addEventListener('click', () => { if(!isDragging) toggleNote(); });
 
-        // --- ၅။ Word Data & Navigation (Original) ---
+        noteBtn.addEventListener('mousedown', () => {
+            isDragging = false; document.addEventListener('mousemove', moveHandler);
+            document.addEventListener('mouseup', () => document.removeEventListener('mousemove', moveHandler), {once:true});
+        });
+        noteBtn.addEventListener('touchstart', () => { isDragging = false; }, {passive:true});
+        noteBtn.addEventListener('touchmove', moveHandler, {passive:false});
+        noteBtn.addEventListener('touchend', () => { if (!isDragging) toggleNote(); });
+        noteBtn.addEventListener('click', () => { if (!isDragging) toggleNote(); });
+
+        /* --- ၆။ Word Navigation & Data (Original) --- */
         const basicWords = [
             { taang: "ရိုဆေ", mm: "Ro Say (မင်္ဂလာပါ)" },
             { taang: "အိုးမ်ရောင်", mm: "Om Yaung (ထမင်းစားပြီးပြီလား)" },
@@ -316,15 +371,14 @@
         ];
         let currentIndex = 0;
         function displayWord(idx) {
-            const w = basicWords[idx];
-            document.getElementById('taang-word').innerText = w.taang;
-            document.getElementById('mm-word').innerText = w.mm;
+            document.getElementById('taang-word').innerText = basicWords[idx].taang;
+            document.getElementById('mm-word').innerText = basicWords[idx].mm;
             document.getElementById('word-count').innerText = `${idx + 1} / ${basicWords.length}`;
         }
         function nextWord() { hapticFeedback(); if (currentIndex < basicWords.length - 1) { currentIndex++; displayWord(currentIndex); } }
         function prevWord() { hapticFeedback(); if (currentIndex > 0) { currentIndex--; displayWord(currentIndex); } }
 
-        // --- ၆။ Init ---
+        /* --- ၇။ Initialization --- */
         window.onload = () => {
             const saved = localStorage.getItem('taang_rich_note');
             if(saved) document.getElementById('note-input').innerHTML = saved;
@@ -332,13 +386,13 @@
             displayWord(0);
         };
 
-        // Dialect & Nav Active State
+        /* Dialect & Nav Styles */
         document.querySelectorAll('.dialect-btn, .nav-item').forEach(el => {
             el.addEventListener('click', function() {
                 hapticFeedback();
-                const selector = this.classList.contains('dialect-btn') ? '.dialect-btn.active' : '.nav-item.active';
-                const current = document.querySelector(selector);
-                if(current) current.classList.remove('active');
+                const sel = this.classList.contains('dialect-btn') ? '.dialect-btn.active' : '.nav-item.active';
+                const cur = document.querySelector(sel);
+                if(cur) cur.classList.remove('active');
                 this.classList.add('active');
             });
         });
